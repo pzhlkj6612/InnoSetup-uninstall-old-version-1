@@ -28,7 +28,7 @@ ${scriptLocationDirPath} = `
     , $('/D' + "ThatAppId=${THAT_APPID}")
     , $(if (${ENABLE_64_BIT_MODE}) { '/D' + 'Enable64BitMode' })
     , $('/O' + ${OUTPUT_INSTALLER_DIR_PATH})
-    , $('/F' + "WaitForItToEnd-${THIS_APPID}-wanna-uninst-${THAT_APPID}" + $(if (${ENABLE_64_BIT_MODE}) { '-x64' } else { '-x86' }))
+    , $('/F' + "WaitForItToBeDeleted-${THIS_APPID}-wanna-uninst-${THAT_APPID}" + $(if (${ENABLE_64_BIT_MODE}) { '-x64' } else { '-x86' }))
     , "${scriptLocationDirPath}\script.iss"
 )
 

@@ -16,7 +16,7 @@
     #error 'ThisAppId and ThatAppId are identical'
 #endif
 
-#define MyAppName " WaitForItToEnd'" + ThisAppId + "'wanna`uninstall'" + ThatAppId
+#define MyAppName " WaitForItToBeDeleted'" + ThisAppId + "'wanna`uninstall'" + ThatAppId
 
 #ifdef Enable64BitMode
     #define MyAppName MyAppName + " - x64"
@@ -65,6 +65,33 @@ begin
 end;
 
 
+function LaunchUninstallerAndWaitForItToBeDeleted(const UninstallString: String; RemainingRetryTimes: Integer): Integer;
+begin
+    Log(Format('Executing "%s" with "%s"', [UninstallString, UninstallParameter]));
+
+    if Exec(UninstallString, UninstallParameter, '', SW_SHOWNORMAL, ewWaitUntilTerminated, Result) then
+        Log(Format('Exit code: 0x%x', [Result]))
+    else
+        Log(Format('System error occurred: 0x%x, %s', [Result, SysErrorMessage(Result)]));
+
+    if 0 <> Result then
+        exit;
+
+
+    Log('Waiting for the uninstaller to be deleted...');
+
+    // https://stackoverflow.com/questions/18902060/disk-caching-issue-with-inno-setup/18988488#18988488
+    while (FileExists(UninstallString)) AND (0 < RemainingRetryTimes) do begin
+        Dec(RemainingRetryTimes);
+        Log(Format('The uninstaller "%s" still exists, waiting... %d', [UninstallString, RemainingRetryTimes]));
+        Sleep(250);
+    end;
+
+
+    Log('Uninstallation complete');
+end;
+
+
 function TryToUninstall(const RegRootKey: Integer; const RegSubKeyName: String): Boolean;
 var
     UninstallString: String;
@@ -78,7 +105,7 @@ begin
 
     UninstallString := RemoveQuotes(UninstallString);
 
-    if 0 <> LaunchUninstallerAndWaitForItToEnd(UninstallString) then
+    if 0 <> LaunchUninstallerAndWaitForItToBeDeleted(UninstallString, 20) then
         Result := False;
 end;
 
