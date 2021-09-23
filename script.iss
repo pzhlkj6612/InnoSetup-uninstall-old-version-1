@@ -47,6 +47,9 @@ Source: "compiler:*"; DestDir: "{app}"; Excludes: "\unins*.*"; Flags: ignorevers
 
 const
     UninstallParameter = '/SILENT /SUPPRESSMSGBOXES /NORESTART /LOG';
+var
+    WbemLocator,
+    WbemServices: Variant;
 
 
 function LaunchUninstallerAndWaitForItToEnd(const UninstallString: String): Integer;
@@ -114,8 +117,6 @@ function GetFilteredPIDByWMIQuery(
 var
     WmiQueryString: string;
 
-    WbemLocator,
-    WbemServices,
     WbemObject,
     WbemObjectSet: Variant;
 
@@ -124,9 +125,6 @@ begin
     Log('ProcessCreatedDateNotEarlierThan: ' + IntToStr(ProcessCreatedDateNotEarlierThan));
 
     SetArrayLength(PidList, 0);  // Initialize anyway
-
-    WbemLocator := CreateOleObject('WbemScripting.SWbemLocator');
-    WbemServices := WbemLocator.ConnectServer();  // Connect to local computer and log on default namespace by default.
 
     WmiQueryString := 'SELECT * FROM Win32_Process WHERE ' + Filter;
 
@@ -211,6 +209,10 @@ begin
 
 
     Log('Waiting for the temporary uninstaller to end...');
+
+    // Initialize WMI connection.
+    WbemLocator := CreateOleObject('WbemScripting.SWbemLocator');
+    WbemServices := WbemLocator.ConnectServer();  // Connect to local computer and log on default namespace by default.
 
     // Filter by Commandline (the most accurate way).
     if 0 < GetFilteredPIDByWMIQuery(CommandlineFilter, StartDateTime, FilteredPidList) then
