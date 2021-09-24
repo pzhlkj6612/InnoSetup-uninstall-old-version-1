@@ -214,7 +214,8 @@ begin
 
     // Filter by Commandline (the most accurate way).
     if 0 < GetFilteredPIDByWMIQuery(CommandlineFilter, StartDateTime, FilteredPidList) then
-        Log('PID Filtered by Commandline: ' + FilteredPidList[I])
+        for I := Low(FilteredPidList) to High(FilteredPidList) do
+            Log('PID Filtered by Commandline: ' + FilteredPidList[I])
     else
         // Fallback. Filter by Image Name (not accurate, but works fine).
         if 0 < GetFilteredPIDByWMIQuery(NameFilter, StartDateTime, FilteredPidList) then
