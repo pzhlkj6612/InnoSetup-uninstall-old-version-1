@@ -158,9 +158,9 @@ begin
                 end;
             end;
         end;
-
-        Result := GetArrayLength(PidList);
     end;
+
+    Result := GetArrayLength(PidList);
 end;
 
 
