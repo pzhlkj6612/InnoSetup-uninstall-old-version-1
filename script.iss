@@ -135,7 +135,7 @@ begin
     WbemObjectSet := WbemServices.ExecQuery(WmiQueryString);
 
     // ?
-    if not VarIsNull(WbemObjectSet) and (WbemObjectSet.Count >= 0) then begin
+    if not VarIsNull(WbemObjectSet) then begin
         Log('WbemObjectSet.Count: ' + IntToStr(WbemObjectSet.Count));
 
         for I := 0 to WbemObjectSet.Count - 1 do begin
