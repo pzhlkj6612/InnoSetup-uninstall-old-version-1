@@ -194,8 +194,6 @@ begin
 
     StartDateTime := StrToInt64(GetDateTimeString('yyyymmddhhnnss', #0, #0));
 
-    Sleep(2000);  // Much greater than 1 second, the smallest granularity.
-
 
     Log(Format('"%s" with "%s" will be executed no earlier than "%d"', [UninstallString, UninstallParameter, StartDateTime]));
 
